@@ -6,10 +6,12 @@ import AppBar from "material-ui/AppBar";
 import IconButton from "material-ui/IconButton";
 import RaisedButton from "material-ui/RaisedButton";
 import RightIconButton from "./components/RightIconButton";
+import TextField from "material-ui/TextField";
 import firebase from "firebase";
 import Modal from "react-modal";
 import FontIcon from "material-ui/FontIcon";
 import styled from "styled-components";
+import _ from "lodash";
 
 const LoginContent = styled.div`
   display: flex;
@@ -40,6 +42,7 @@ firebase.initializeApp(config);
 
 const auth = firebase.auth;
 const provider = new firebase.auth.FacebookAuthProvider();
+
 provider.addScope("");
 export default class App extends Component {
   constructor(props) {
@@ -47,7 +50,11 @@ export default class App extends Component {
     this.state = {
       LOGON: "NONE",
       user: {},
-      LoginModal: false
+      LoginModal: false,
+      account: "",
+      password: "",
+      accountErrorText: "",
+      passwordErrorText: ""
     };
   }
 
@@ -58,6 +65,27 @@ export default class App extends Component {
       this.setState({ user: result.user, LOGON: "LOGON", LoginModal: false });
     } catch (error) {
       this.setState({ LoginModal: false });
+    }
+  };
+
+  loginWithEmail = async () => {
+    const { account, password } = this.state;
+    if (_.isEmpty(account)) {
+      this.setState({ accountErrorText: "帳號不可為空" });
+    } else if (_.isEmpty(password)) {
+      this.setState({ passwordErrorText: "帳號不可為空" });
+    } else {
+      try {
+        const user = await firebase
+          .auth()
+          .signInWithEmailAndPassword(account, password);
+        this.setState({ user, LOGON: "LOGON", LoginModal: false });
+      } catch (error) {
+        const user = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(account, password);
+        this.setState({ user, LOGON: "LOGON", LoginModal: false });
+      }
     }
   };
 
@@ -93,19 +121,46 @@ export default class App extends Component {
             contentLabel="Modal"
           >
             <LoginContent>
-              <RaisedButton
-                label="FacebookLogin"
-                onClick={this.login}
-                style={{ margin: 10 }}
-                primary={true}
-                icon={<FontIcon className="fa fa-facebook" color={white} />}
-              />
-              <RaisedButton
-                label="取消"
-                onClick={() => this.setState({ LoginModal: false })}
-                backgroundColor={red900}
-                labelColor={white}
-              />
+              <div>
+                <TextField
+                  hintText="Account"
+                  type="email"
+                  errorText={this.state.accountErrorText}
+                  value={this.state.account}
+                  onChange={e => this.setState({ account: e.target.value })}
+                />
+                <TextField
+                  hintText="Password"
+                  floatingLabelText="Password"
+                  errorText={this.state.passwordErrorText}
+                  type="password"
+                  value={this.state.password}
+                  onChange={e => this.setState({ password: e.target.value })}
+                />
+                <RaisedButton
+                  label="登入"
+                  onClick={this.loginWithEmail}
+                  backgroundColor={blue800}
+                  labelColor={white}
+                />
+              </div>
+              <div>
+                <RaisedButton
+                  label="FacebookLogin"
+                  onClick={this.login}
+                  style={{ margin: 10 }}
+                  primary={true}
+                  icon={<FontIcon className="fa fa-facebook" color={white} />}
+                />
+              </div>
+              <div>
+                <RaisedButton
+                  label="取消"
+                  onClick={() => this.setState({ LoginModal: false })}
+                  backgroundColor={red900}
+                  labelColor={white}
+                />
+              </div>
             </LoginContent>
           </Modal>
           <AppBar
