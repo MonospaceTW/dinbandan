@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { cyan500, blue800, white, red500 } from "material-ui/styles/colors";
+import { cyan500, blue800, white, red900 } from "material-ui/styles/colors";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import AppBar from "material-ui/AppBar";
@@ -15,15 +15,6 @@ const LoginContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const FacebookLogin = styled.button`
-  background-color: ${blue800};
-  height: 40px;
-  padding: 5px;
-  font-size: 22px;
-  color: ${white};
-  border-radius: 5px;
 `;
 
 const muiTheme = getMuiTheme({
@@ -49,33 +40,39 @@ firebase.initializeApp(config);
 
 const auth = firebase.auth;
 const provider = new firebase.auth.FacebookAuthProvider();
-
+provider.addScope("");
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       LOGON: "NONE",
-      user: null
+      user: {},
+      LoginModal: false
     };
   }
 
   login = async () => {
-    const result = await auth().signInWithPopup(provider);
-    this.setState({ user: result.user });
+    try {
+      await this.logout();
+      const result = await auth().signInWithPopup(provider);
+      this.setState({ user: result.user, LOGON: "LOGON", LoginModal: false });
+    } catch (error) {
+      this.setState({ LoginModal: false });
+    }
   };
 
   logout = async () => {
     await auth().signOut();
-    this.setState({ user: null });
+    this.setState({ user: {}, LOGON: "NONE" });
   };
 
   render() {
-    const { user } = this.state;
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <Modal
-            isOpen={true}
+            ariaHideApp={false}
+            isOpen={this.state.LoginModal}
             style={{
               overlay: {
                 height: "100vh",
@@ -99,9 +96,15 @@ export default class App extends Component {
               <RaisedButton
                 label="FacebookLogin"
                 onClick={this.login}
-                style={{ backgroundColor: blue800, margin: 10 }}
+                style={{ margin: 10 }}
                 primary={true}
                 icon={<FontIcon className="fa fa-facebook" color={white} />}
+              />
+              <RaisedButton
+                label="取消"
+                onClick={() => this.setState({ LoginModal: false })}
+                backgroundColor={red900}
+                labelColor={white}
               />
             </LoginContent>
           </Modal>
@@ -109,7 +112,14 @@ export default class App extends Component {
             title="訂便當"
             onLeftIconButtonClick={() => console.log("left icon")}
             iconElementLeft={<IconButton iconClassName="fa fa-bars" />}
-            iconElementRight={<RightIconButton />}
+            iconElementRight={
+              <RightIconButton
+                logout={this.logout}
+                setLoginModal={() => this.setState({ LoginModal: true })}
+                LOGON={this.state.LOGON}
+                user={this.state.user}
+              />
+            }
           />
         </div>
       </MuiThemeProvider>
