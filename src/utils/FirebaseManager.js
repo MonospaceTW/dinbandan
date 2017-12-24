@@ -1,3 +1,4 @@
+import _ from "lodash";
 import firebase from "firebase";
 import uuid from "uuid/v4";
 import configs from "../config";
@@ -32,6 +33,41 @@ class FirebaseManagerClass {
   signOut = () => {
     return this.auth.signOut();
   };
+
+  getValue(route) {
+    return this.database
+      .ref(route)
+      .once("value")
+      .then(function(snapshot) {
+        return snapshot.val();
+      });
+  }
+
+  removeChild(route, key) {
+    return this.database
+      .ref(route)
+      .child(key)
+      .remove();
+  }
+
+  async addNewStore(route, query) {
+    const newStoreKey = await this.database
+      .ref()
+      .child(route)
+      .push().key;
+    query.StoreKey = newStoreKey;
+    const updates = {
+      [`/${route}/${newStoreKey}`]: query
+    };
+    return this.database.ref().update(updates);
+  }
+  bindAsyncFunc(route, callback) {
+    return this.database.ref(route).on("value", callback);
+  }
+
+  unbindAsyncFunc(route) {
+    return this.database.ref(route).off();
+  }
 
   createNewCuisine(data) {
     return this.database.ref(`cuisine/${uuid()}`).set({

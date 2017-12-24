@@ -10,12 +10,13 @@ import RightIconButton from "./components/RightIconButton";
 import CreateNewmenu from "./components/CreateNewmenu";
 import TextField from "material-ui/TextField";
 import FirebaseManager from "./utils/FirebaseManager";
+import firebase from "firebase";
 import Modal from "react-modal";
 import FontIcon from "material-ui/FontIcon";
 import styled from "styled-components";
 import _ from "lodash";
+import Store from "./Store";
 import uuid from "uuid/v4";
-
 const LoginContent = styled.div`
   display: flex;
   justify-content: center;
@@ -44,19 +45,6 @@ export default class App extends Component {
       accountErrorText: "",
       passwordErrorText: ""
     };
-  }
-
-  componentDidMount() {
-    // database
-    //   .ref(`stores/${uuid()}`)
-    //   .set({
-    //     name: "八方雲集",
-    //     start: "10:00",
-    //     end: "22:00"
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
   }
 
   login = async () => {
@@ -180,8 +168,8 @@ export default class App extends Component {
                 />
               }
             />
-
             <Route path="/create/menu" component={CreateNewmenu} />
+            <Route path="/store" component={Store} />
           </div>
         </MuiThemeProvider>
       </Router>
