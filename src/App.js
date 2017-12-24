@@ -1,17 +1,20 @@
 import React, { Component } from "react";
 import { cyan500, blue800, white, red900 } from "material-ui/styles/colors";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import AppBar from "material-ui/AppBar";
 import IconButton from "material-ui/IconButton";
 import RaisedButton from "material-ui/RaisedButton";
 import RightIconButton from "./components/RightIconButton";
+import CreateNewmenu from "./components/CreateNewmenu";
 import TextField from "material-ui/TextField";
-import firebase from "firebase";
+import FirebaseManager from "./utils/FirebaseManager";
 import Modal from "react-modal";
 import FontIcon from "material-ui/FontIcon";
 import styled from "styled-components";
 import _ from "lodash";
+import uuid from "uuid/v4";
 
 const LoginContent = styled.div`
   display: flex;
@@ -29,21 +32,6 @@ const muiTheme = getMuiTheme({
   }
 });
 
-const config = {
-  apiKey: "AIzaSyCJshSB2O3ZG84vRqT9hOMJPDtQXQqOY7U",
-  authDomain: "dinbandan-46e8c.firebaseapp.com",
-  databaseURL: "https://dinbandan-46e8c.firebaseio.com",
-  storageBucket: "dinbandan-46e8c.appspot.com",
-  messagingSenderId: "544525397793",
-  projectId: "dinbandan-46e8c"
-};
-
-firebase.initializeApp(config);
-
-const auth = firebase.auth;
-const provider = new firebase.auth.FacebookAuthProvider();
-
-provider.addScope("");
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -58,10 +46,23 @@ export default class App extends Component {
     };
   }
 
+  componentDidMount() {
+    // database
+    //   .ref(`stores/${uuid()}`)
+    //   .set({
+    //     name: "八方雲集",
+    //     start: "10:00",
+    //     end: "22:00"
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
+  }
+
   login = async () => {
     try {
       await this.logout();
-      const result = await auth().signInWithPopup(provider);
+      const result = await FirebaseManager.signInWithPopup();
       this.setState({ user: result.user, LOGON: "LOGON", LoginModal: false });
     } catch (error) {
       this.setState({ LoginModal: false });
@@ -76,108 +77,114 @@ export default class App extends Component {
       this.setState({ passwordErrorText: "帳號不可為空" });
     } else {
       try {
-        const user = await firebase
-          .auth()
-          .signInWithEmailAndPassword(account, password);
+        const user = await FirebaseManager.signInWithEmailAndPassword(
+          account,
+          password
+        );
         this.setState({ user, LOGON: "LOGON", LoginModal: false });
       } catch (error) {
-        const user = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(account, password);
+        const user = await FirebaseManager.createUserWithEmailAndPassword(
+          account,
+          password
+        );
         this.setState({ user, LOGON: "LOGON", LoginModal: false });
       }
     }
   };
 
   logout = async () => {
-    await auth().signOut();
+    await FirebaseManager.signOut();
     this.setState({ user: {}, LOGON: "NONE" });
   };
 
   render() {
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
-        <div>
-          <Modal
-            ariaHideApp={false}
-            isOpen={this.state.LoginModal}
-            style={{
-              overlay: {
-                height: "100vh",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "rgba(0, 0, 0, 0.75)"
-              },
-              content: {
-                marginLeft: "30vw",
-                marginTop: "30vh",
-                width: "30vw",
-                height: "30vh"
+      <Router>
+        <MuiThemeProvider muiTheme={muiTheme}>
+          <div>
+            <Modal
+              ariaHideApp={false}
+              isOpen={this.state.LoginModal}
+              style={{
+                overlay: {
+                  height: "100vh",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.75)"
+                },
+                content: {
+                  marginLeft: "30vw",
+                  marginTop: "30vh",
+                  width: "30vw",
+                  height: "30vh"
+                }
+              }}
+              contentLabel="Modal"
+            >
+              <LoginContent>
+                <div>
+                  <TextField
+                    hintText="Account"
+                    type="email"
+                    errorText={this.state.accountErrorText}
+                    value={this.state.account}
+                    onChange={e => this.setState({ account: e.target.value })}
+                  />
+                  <TextField
+                    hintText="Password"
+                    floatingLabelText="Password"
+                    errorText={this.state.passwordErrorText}
+                    type="password"
+                    value={this.state.password}
+                    onChange={e => this.setState({ password: e.target.value })}
+                  />
+                  <RaisedButton
+                    label="登入"
+                    onClick={this.loginWithEmail}
+                    backgroundColor={blue800}
+                    labelColor={white}
+                  />
+                </div>
+                <div>
+                  <RaisedButton
+                    label="FacebookLogin"
+                    onClick={this.login}
+                    style={{ margin: 10 }}
+                    primary={true}
+                    icon={<FontIcon className="fa fa-facebook" color={white} />}
+                  />
+                </div>
+                <div>
+                  <RaisedButton
+                    label="取消"
+                    onClick={() => this.setState({ LoginModal: false })}
+                    backgroundColor={red900}
+                    labelColor={white}
+                  />
+                </div>
+              </LoginContent>
+            </Modal>
+            <AppBar
+              title="訂便當"
+              onLeftIconButtonClick={() => console.log("left icon")}
+              iconElementLeft={<IconButton iconClassName="fa fa-bars" />}
+              iconElementRight={
+                <RightIconButton
+                  logout={this.logout}
+                  setLoginModal={() => this.setState({ LoginModal: true })}
+                  LOGON={this.state.LOGON}
+                  user={this.state.user}
+                />
               }
-            }}
-            contentLabel="Modal"
-          >
-            <LoginContent>
-              <div>
-                <TextField
-                  hintText="Account"
-                  type="email"
-                  errorText={this.state.accountErrorText}
-                  value={this.state.account}
-                  onChange={e => this.setState({ account: e.target.value })}
-                />
-                <TextField
-                  hintText="Password"
-                  floatingLabelText="Password"
-                  errorText={this.state.passwordErrorText}
-                  type="password"
-                  value={this.state.password}
-                  onChange={e => this.setState({ password: e.target.value })}
-                />
-                <RaisedButton
-                  label="登入"
-                  onClick={this.loginWithEmail}
-                  backgroundColor={blue800}
-                  labelColor={white}
-                />
-              </div>
-              <div>
-                <RaisedButton
-                  label="FacebookLogin"
-                  onClick={this.login}
-                  style={{ margin: 10 }}
-                  primary={true}
-                  icon={<FontIcon className="fa fa-facebook" color={white} />}
-                />
-              </div>
-              <div>
-                <RaisedButton
-                  label="取消"
-                  onClick={() => this.setState({ LoginModal: false })}
-                  backgroundColor={red900}
-                  labelColor={white}
-                />
-              </div>
-            </LoginContent>
-          </Modal>
-          <AppBar
-            title="訂便當"
-            onLeftIconButtonClick={() => console.log("left icon")}
-            iconElementLeft={<IconButton iconClassName="fa fa-bars" />}
-            iconElementRight={
-              <RightIconButton
-                logout={this.logout}
-                setLoginModal={() => this.setState({ LoginModal: true })}
-                LOGON={this.state.LOGON}
-                user={this.state.user}
-              />
-            }
-          />
-        </div>
-      </MuiThemeProvider>
+            />
+
+            <Route path="/create/menu" component={CreateNewmenu} />
+          </div>
+        </MuiThemeProvider>
+      </Router>
     );
   }
 }
