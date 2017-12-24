@@ -12,7 +12,6 @@ class CreateNewmenu extends React.Component {
     count: 0
   };
   submit = () => {
-    console.log("create new cuisine");
     FirebaseManager.createNewCuisine({ ...this.state }).catch(error =>
       console.log(error)
     );
