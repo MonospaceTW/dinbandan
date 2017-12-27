@@ -5371,6 +5371,10 @@ react-event-listener@^0.5.1:
     prop-types "^15.6.0"
     warning "^3.0.0"
 
+react-flexbox@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/react-flexbox/-/react-flexbox-3.1.4.tgz#224ca79be13a89689c0c7fc1b7f451a0f2ba7b95"
+
 react-modal@^3.1.8:
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.1.8.tgz#7d6b1958f44828babd2a1ce826c28fa40d026b0f"

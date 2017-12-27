@@ -1,4 +1,3 @@
-import _ from "lodash";
 import firebase from "firebase";
 import uuid from "uuid/v4";
 import configs from "../config";
@@ -9,15 +8,24 @@ class FirebaseManagerClass {
     firebase.initializeApp(options);
     this.provider = new firebase.auth.FacebookAuthProvider();
     this.database = firebase.database();
+    this.storage = firebase.storage();
     this.auth = firebase.auth();
   }
 
-  createNewCuisine(data) {
-    // return this.database.ref(`cuisine/${uuid()}`).set({
-    //   ...data
-    // });
+  uploadFile(file) {
+    const route = `/${file.name}`;
+    return this.storage
+      .ref(route)
+      .put(file)
+      .then(snapshot => {
+        const result = {
+          url: snapshot.downloadURL,
+          route
+        };
+        return result;
+      })
+      .catch(error => console.log(error));
   }
-
   signInWithPopup = () => {
     return this.auth.signInWithPopup(this.provider);
   };

@@ -2,21 +2,23 @@ import React, { Component } from "react";
 import { cyan500, blue800, white, red900 } from "material-ui/styles/colors";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import Drawer from "material-ui/Drawer";
+import MenuItem from "material-ui/MenuItem";
+import Divider from "material-ui/Divider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import AppBar from "material-ui/AppBar";
-import IconButton from "material-ui/IconButton";
 import RaisedButton from "material-ui/RaisedButton";
 import RightIconButton from "./components/RightIconButton";
+import IconButton from "material-ui/IconButton";
 import CreateNewmenu from "./components/CreateNewmenu";
 import TextField from "material-ui/TextField";
 import FirebaseManager from "./utils/FirebaseManager";
-import firebase from "firebase";
 import Modal from "react-modal";
 import FontIcon from "material-ui/FontIcon";
 import styled from "styled-components";
 import _ from "lodash";
-import Store from "./Store";
-import uuid from "uuid/v4";
+import Store from "./components/Store";
+
 const LoginContent = styled.div`
   display: flex;
   justify-content: center;
@@ -37,6 +39,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      sidebar: false,
       LOGON: "NONE",
       user: {},
       LoginModal: false,
@@ -157,7 +160,7 @@ export default class App extends Component {
             </Modal>
             <AppBar
               title="訂便當"
-              onLeftIconButtonClick={() => console.log("left icon")}
+              onLeftIconButtonClick={() => this.setState({ sidebar: true })}
               iconElementLeft={<IconButton iconClassName="fa fa-bars" />}
               iconElementRight={
                 <RightIconButton
@@ -170,6 +173,32 @@ export default class App extends Component {
             />
             <Route path="/create/menu" component={CreateNewmenu} />
             <Route path="/store" component={Store} />
+
+            <Drawer
+              width={200}
+              open={this.state.sidebar}
+              zDepth={1}
+              docked={false}
+            >
+              <AppBar
+                onLeftIconButtonClick={() => console.log("left icon")}
+                iconElementLeft={<div />}
+                iconElementRight={
+                  <IconButton
+                    onClick={() => this.setState({ sidebar: false })}
+                    iconClassName="fa fa-arrow-left"
+                    iconStyle={{ color: "white" }}
+                  />
+                }
+              />
+              <Link to="/store">
+                <MenuItem
+                  primaryText="商店列表"
+                  leftIcon={<FontIcon className="fa fa-building" />}
+                />
+              </Link>
+              <Divider />
+            </Drawer>
           </div>
         </MuiThemeProvider>
       </Router>

@@ -2,7 +2,6 @@ import React from "react";
 import propTypes from "prop-types";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
-import uuid from "uuid/v4";
 import FirebaseManager from "../utils/FirebaseManager";
 
 class CreateNewmenu extends React.Component {
