@@ -26,6 +26,7 @@ class FirebaseManagerClass {
       })
       .catch(error => console.log(error));
   }
+
   signInWithPopup = () => {
     return this.auth.signInWithPopup(this.provider);
   };
