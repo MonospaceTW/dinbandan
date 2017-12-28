@@ -1,3 +1,8 @@
+# 參與人員
+
+  * [Polo](https://github.com/polo13999)
+  * [Tomas](https://github.com/horsekitlin)
+
 # config schema
 
 ```json

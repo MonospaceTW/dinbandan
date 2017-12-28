@@ -1,4 +1,5 @@
 import React from "react";
+import propTypes from "prop-types";
 import {
   Table,
   TableBody,
@@ -7,7 +8,7 @@ import {
   TableRow,
   TableRowColumn
 } from "material-ui/Table";
-import { red900 } from "material-ui/styles/colors";
+
 import Dialog from "material-ui/Dialog";
 import IconButton from "material-ui/IconButton";
 import FlatButton from "material-ui/FlatButton";
@@ -16,6 +17,7 @@ import DropDownMenu from "material-ui/DropDownMenu";
 import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
 import FirebaseManager from "../../utils/FirebaseManager";
+import ListTable from "./ListTable";
 import _ from "lodash";
 import styled from "styled-components";
 
@@ -26,6 +28,7 @@ const Row = styled.div`
 `;
 
 class StoreList extends React.Component {
+  static propTypes = {};
   constructor(props) {
     super(props);
     this.state = {
@@ -53,15 +56,6 @@ class StoreList extends React.Component {
     FirebaseManager.unbindAsyncFunc("/stores/");
   }
 
-  updateStores = stores => {
-    const storeList = _.values(stores.val());
-    this.setState({ list: storeList });
-  };
-
-  _Delete(StoreKey) {
-    FirebaseManager.removeChild("/stores/", StoreKey);
-  }
-
   uploadFile = async file => {
     const logo = await FirebaseManager.uploadFile(file);
     const data = this.state.storeData;
@@ -75,12 +69,17 @@ class StoreList extends React.Component {
   };
 
   deleteStore = async StoreKey => {
-    const result = await FirebaseManager.removeChild("/stores", StoreKey);
-    console.log(result);
+    await FirebaseManager.removeChild("/stores", StoreKey);
+  };
+
+  updateStores = stores => {
+    const storeList = _.values(stores.val());
+    this.setState({ list: storeList });
   };
 
   render() {
     const storeList = _.values(this.state.list);
+    console.log(this.props);
     return (
       <div>
         <Table fixedHeader={true} fixedFooter={true}>
@@ -102,31 +101,7 @@ class StoreList extends React.Component {
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {storeList.map((store, index) => {
-              console.log(store);
-              return (
-                <TableRow key={store.StoreKey}>
-                  <TableRowColumn>
-                    <Avatar src={store.logo.url} />
-                  </TableRowColumn>
-                  <TableRowColumn>{store.name}</TableRowColumn>
-                  <TableRowColumn>
-                    <FlatButton
-                      label="揪團"
-                      onClick={() => alert("開啟揪團")}
-                    />
-                  </TableRowColumn>
-                  <TableRowColumn>
-                    <FlatButton
-                      backgroundColor={red900}
-                      labelStyle={{ color: "white" }}
-                      label="刪除"
-                      onClick={() => this.deleteStore(store.StoreKey)}
-                    />
-                  </TableRowColumn>
-                </TableRow>
-              );
-            })}
+            <ListTable storeList={storeList} />
           </TableBody>
         </Table>
         <Dialog
