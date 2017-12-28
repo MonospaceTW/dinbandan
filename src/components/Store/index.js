@@ -62,10 +62,6 @@ class StoreList extends React.Component {
     FirebaseManager.removeChild("/stores/", StoreKey);
   }
 
-  _AddNewStore = async storeName => {
-    FirebaseManager.addNewStore("stores", { storeName });
-  };
-
   uploadFile = async file => {
     const logo = await FirebaseManager.uploadFile(file);
     const data = this.state.storeData;
@@ -77,6 +73,12 @@ class StoreList extends React.Component {
     const { storeData } = this.state;
     await FirebaseManager.addNewStore("/stores", storeData);
   };
+
+  deleteStore = async StoreKey => {
+    const result = await FirebaseManager.removeChild("/stores", StoreKey);
+    console.log(result);
+  };
+
   render() {
     const storeList = _.values(this.state.list);
     return (
@@ -119,7 +121,7 @@ class StoreList extends React.Component {
                       backgroundColor={red900}
                       labelStyle={{ color: "white" }}
                       label="刪除"
-                      onClick={() => alert("刪除")}
+                      onClick={() => this.deleteStore(store.StoreKey)}
                     />
                   </TableRowColumn>
                 </TableRow>
