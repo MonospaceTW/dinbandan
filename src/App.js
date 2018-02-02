@@ -1,207 +1,221 @@
 import React, { Component } from "react";
-import { cyan500, blue800, white, red900 } from "material-ui/styles/colors";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import Drawer from "material-ui/Drawer";
-import MenuItem from "material-ui/MenuItem";
-import Divider from "material-ui/Divider";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-import AppBar from "material-ui/AppBar";
-import RaisedButton from "material-ui/RaisedButton";
-import RightIconButton from "./components/RightIconButton";
-import IconButton from "material-ui/IconButton";
-import CreateNewmenu from "./components/CreateNewmenu";
-import TextField from "material-ui/TextField";
-import FirebaseManager from "./utils/FirebaseManager";
-import Modal from "react-modal";
-import FontIcon from "material-ui/FontIcon";
-import styled from "styled-components";
-import _ from "lodash";
-import Store from "./components/Store";
+import styled, { keyframes, css } from "styled-components";
 
-const LoginContent = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const Title = styled.h1`
+  font-size: 1.5em;
+  text-align: center;
+  color: palevioletred;
 `;
 
-const muiTheme = getMuiTheme({
-  palette: {
-    textColor: cyan500
-  },
-  appBar: {
-    height: 50,
-    zIndex: "20"
+const Wrapper = styled.section`
+  padding: 4em;
+  background: papayawhip;
+`;
+
+const Input = styled.input`
+  padding: 0.5em;
+  margin: 0.5em;
+  color: palevioletred;
+  background: papayawhip;
+  border: none;
+  border-radius: 3px;
+`;
+
+const Button = styled.button`
+  background: ${props => (props.primary ? "palevioletred" : "white")};
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border 2px solid palevioletred;
+  border-radius: 3px;
+`;
+
+const Link = ({ className, children }) => {
+  return <a className={className}>{children}</a>;
+};
+
+const StyledLink = styled(Link)`
+  color: palevioletred;
+  font-weight: blod;
+`;
+
+const ButtonExt = styled.button`
+  color: palevioletred;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+  border-radius: 3px;
+`;
+
+const TomatoButton = ButtonExt.extend`
+  color: tomato;
+  border-color: tomato;
+`;
+
+const NewLink = ButtonExt.withComponent("a");
+const TomatoNewLink = NewLink.extend`
+  color: tomato;
+  border-color: tomato;
+`;
+
+const NewInput = styled.input.attrs({
+  type: "password",
+  margin: props => props.size || "1em",
+  padding: props => props.size || "1em"
+})`
+  color: palevioletred;
+  font-size: 1em;
+  border: 2px solid palevioletred;
+  border-radius: 3px;
+  margin: ${props => props.margin};
+  padding: ${props => props.padding};
+`;
+
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
   }
-});
+
+  to {
+    transform: rotate(180deg);
+  }
+`;
+
+const Rotate = styled.div`
+  display: inline-block;
+  animation: ${rotate360} 2s linear infinite;
+  padding: 2rem 1rem;
+  font-size: 1.2rem;
+`;
+
+const ThemeButton = styled.button`
+  color: ${props => props.theme.fg};
+  border: 2px solid ${props => props.theme.fg};
+  background: ${props => props.theme.bg};
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border-radius: 3px;
+`;
+
+const theme = {
+  fg: "palevioletred",
+  bg: "white"
+};
+
+const userInput = "/api/withdraw-funds";
+const ArbitraryComponent = styled.div`
+  background: url(${userInput});
+`;
+
+const RefInput = styled.input`
+  padding: 0.5em;
+  margin: 0.5em;
+  color: palevioletred;
+  background: papayawhip;
+  border: none;
+  border-radius: 3px;
+`;
+
+const MediaTemplate = styled.div`
+  background: papayawhip;
+  height: 3em;
+  width: 3em;
+  @media (max-width: 700px) {
+    background-color: palevioletred;
+  }
+`;
+
+class MyComponent extends React.Component {
+  render() {
+    // Attach the passed-in className to the DOM node
+    return <div className={this.props.className} />;
+  }
+}
+
+const sizes = {
+  desktop: 992,
+  tablet: 768,
+  phone: 376
+};
+
+const meidaquery = Object.keys(sizes).reduce((acc, label) => {
+  acc[label] = (...args) => css`
+    @media (max-width: ${sizes[label] / 16}em) {
+      ${css(...args)};
+    }
+  `;
+  return acc;
+}, {});
+
+const Content = styled.div`
+  height: 3em;
+  width: 3em;
+  background: papayawhip;
+
+  /* Now we have our methods on media and can use them instead of raw queries */
+  ${meidaquery.desktop`background: dodgerblue;`}
+  ${meidaquery.tablet`background: mediumseagreen;`}
+  ${meidaquery.phone`background: palevioletred;`}
+`;
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sidebar: false,
-      LOGON: "NONE",
-      user: {},
-      LoginModal: false,
-      account: "",
-      password: "",
-      accountErrorText: "",
-      passwordErrorText: ""
-    };
-  }
-
-  login = async () => {
-    try {
-      await this.logout();
-      const result = await FirebaseManager.signInWithPopup();
-      this.setState({ user: result.user, LOGON: "LOGON", LoginModal: false });
-    } catch (error) {
-      this.setState({ LoginModal: false });
-    }
-  };
-
-  loginWithEmail = async () => {
-    const { account, password } = this.state;
-    if (_.isEmpty(account)) {
-      this.setState({ accountErrorText: "帳號不可為空" });
-    } else if (_.isEmpty(password)) {
-      this.setState({ passwordErrorText: "帳號不可為空" });
-    } else {
-      try {
-        const user = await FirebaseManager.signInWithEmailAndPassword(
-          account,
-          password
-        );
-        this.setState({ user, LOGON: "LOGON", LoginModal: false });
-      } catch (error) {
-        const user = await FirebaseManager.createUserWithEmailAndPassword(
-          account,
-          password
-        );
-        this.setState({ user, LOGON: "LOGON", LoginModal: false });
-      }
-    }
-  };
-
-  logout = async () => {
-    await FirebaseManager.signOut();
-    this.setState({ user: {}, LOGON: "NONE" });
-  };
-
   render() {
     return (
-      <Router>
-        <MuiThemeProvider muiTheme={muiTheme}>
-          <div>
-            <Modal
-              ariaHideApp={false}
-              isOpen={this.state.LoginModal}
-              style={{
-                overlay: {
-                  height: "100vh",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.75)"
-                },
-                content: {
-                  marginLeft: "30vw",
-                  marginTop: "30vh",
-                  width: "30vw",
-                  height: "30vh"
-                }
-              }}
-              contentLabel="Modal"
-            >
-              <LoginContent>
-                <div>
-                  <TextField
-                    hintText="Account"
-                    type="email"
-                    errorText={this.state.accountErrorText}
-                    value={this.state.account}
-                    onChange={e => this.setState({ account: e.target.value })}
-                  />
-                  <TextField
-                    hintText="Password"
-                    floatingLabelText="Password"
-                    errorText={this.state.passwordErrorText}
-                    type="password"
-                    value={this.state.password}
-                    onChange={e => this.setState({ password: e.target.value })}
-                  />
-                  <RaisedButton
-                    label="登入"
-                    onClick={this.loginWithEmail}
-                    backgroundColor={blue800}
-                    labelColor={white}
-                  />
-                </div>
-                <div>
-                  <RaisedButton
-                    label="FacebookLogin"
-                    onClick={this.login}
-                    style={{ margin: 10 }}
-                    primary={true}
-                    icon={<FontIcon className="fa fa-facebook" color={white} />}
-                  />
-                </div>
-                <div>
-                  <RaisedButton
-                    label="取消"
-                    onClick={() => this.setState({ LoginModal: false })}
-                    backgroundColor={red900}
-                    labelColor={white}
-                  />
-                </div>
-              </LoginContent>
-            </Modal>
-            <AppBar
-              title="訂便當"
-              onLeftIconButtonClick={() => this.setState({ sidebar: true })}
-              iconElementLeft={<IconButton iconClassName="fa fa-bars" />}
-              iconElementRight={
-                <RightIconButton
-                  logout={this.logout}
-                  setLoginModal={() => this.setState({ LoginModal: true })}
-                  LOGON={this.state.LOGON}
-                  user={this.state.user}
-                />
-              }
-            />
-            <Route path="/create/menu" component={CreateNewmenu} />
-            <Route path="/store" component={Store} />
+      <div>
+        <Wrapper>
+          <Title>Hello World, this is my first styled component!</Title>
+          <Input placeholder="@mxstbr" type="text" />
+          <Input value="@geelen" type="text" />
+        </Wrapper>
+        <Button>Normal</Button>
+        <Button primary>Primary</Button>
+        <br />
+        <Link>Unstyled, boring Link</Link>
+        <br />
+        <StyledLink>Styled, exciting Link</StyledLink>
+        <div>
+          <Button>Normal Button</Button>
+          <TomatoButton>Tomato Button</TomatoButton>
+        </div>
+        <div>
+          <NewLink>Normal Link</NewLink>
+          <TomatoNewLink>TomatoNew Link</TomatoNewLink>
+        </div>
 
-            <Drawer
-              width={200}
-              open={this.state.sidebar}
-              zDepth={1}
-              docked={false}
-            >
-              <AppBar
-                onLeftIconButtonClick={() => console.log("left icon")}
-                iconElementLeft={<div />}
-                iconElementRight={
-                  <IconButton
-                    onClick={() => this.setState({ sidebar: false })}
-                    iconClassName="fa fa-arrow-left"
-                    iconStyle={{ color: "white" }}
-                  />
-                }
-              />
-              <Link to="/store">
-                <MenuItem
-                  primaryText="商店列表"
-                  leftIcon={<FontIcon className="fa fa-building" />}
-                />
-              </Link>
-              <Divider />
-            </Drawer>
-          </div>
-        </MuiThemeProvider>
-      </Router>
+        <div>
+          <NewInput placeholder="A small text input" size="1em" />
+          <br />
+          <NewInput placeholder="A bigger text input" size="2em" />
+        </div>
+        <div>
+          <Rotate>&lt; 💅 &gt;</Rotate>
+        </div>
+        <div>
+          <RefInput
+            placeholder="Hover here..."
+            innerRef={x => {
+              this.input = x;
+            }}
+            onMouseEnter={() => this.input.focus()}
+            onMouseLeave={() => this.input.blur()}
+          />
+        </div>
+        <div>
+          <ArbitraryComponent>ArbitraryComponent</ArbitraryComponent>
+        </div>
+        <div>
+          <MyComponent className="red-bg">sadfasfs</MyComponent>
+        </div>
+
+        <div>
+          <MediaTemplate />
+        </div>
+        <div>
+          <Content />
+        </div>
+      </div>
     );
   }
 }
