@@ -2723,6 +2723,10 @@ flexboxgrid2@^7.0.0-alpha7:
   dependencies:
     normalize.css "^7.0.0"
 
+flux-constants@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/flux-constants/-/flux-constants-0.2.2.tgz#c376ffe3c40195d4924249e71e66e7851f8764a3"
+
 for-in@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -3255,6 +3259,10 @@ ieee754@^1.1.4:
 ignore@^3.3.3:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.7.tgz#612289bfb3c220e186a58118618d5be8c1bab021"
+
+immutable@^3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
 
 import-local@^0.1.1:
   version "0.1.1"

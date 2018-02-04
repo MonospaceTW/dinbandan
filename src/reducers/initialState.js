@@ -4,7 +4,9 @@ const auth = Immutable.fromJS({
   isFetching: false,
   isAuth: false,
   info: {},
-  token: ""
+  token: "",
+  accountErrorText: "",
+  passwordErrorText: ""
 });
 
-export { auth };
+export default { auth };
