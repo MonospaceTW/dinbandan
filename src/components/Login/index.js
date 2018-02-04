@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import propTypes from "prop-types";
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
-
 import styled from "styled-components";
+import { Map } from "immutable";
 
 const LoginForm = styled.form`
   display: flex;
@@ -19,21 +20,44 @@ const CenterRow = styled.div`
 `;
 
 class LoginScene extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      account: "",
+      password: ""
+    };
+  }
+  static propTypes = {
+    Login: propTypes.func.isRequired,
+    auth: propTypes.instanceOf(Map).isRequired,
+    router: propTypes.object.isRequired
+  };
   render() {
-    console.log(this.props.auth);
+    const { auth } = this.props;
+    console.log(this.props.Login);
     return (
       <LoginForm>
         <fieldset>
           <legend>會員登入</legend>
           <CenterRow>
-            <TextField hintText="帳號" errorText={""} />
+            <TextField
+              onChange={e => this.setState({ account: e.target.value })}
+              hintText="帳號"
+              errorText={auth.get("accountErrorText")}
+            />
           </CenterRow>
           <CenterRow>
-            <TextField hintText="密碼" errorText={""} />
+            <TextField
+              onChange={e => this.setState({ password: e.target.value })}
+              hintText="密碼"
+              errorText={auth.get("passwordErrorText")}
+            />
           </CenterRow>
           <CenterRow>
             <RaisedButton
+              onClick={e => this.props.Login(this.state)}
               style={{ width: "100%", marginTop: 10 }}
+              disabled={auth.get("isFetching")}
               primary
               label="登入"
             />
@@ -42,6 +66,7 @@ class LoginScene extends Component {
             <RaisedButton
               style={{ width: "100%", marginTop: 10 }}
               primary
+              disabled={auth.get("isFetching")}
               label="註冊"
             />
           </CenterRow>

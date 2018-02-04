@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
+import { LoginAction } from "../actions/auth";
 import LoginScene from "../components/Login";
-import { withRouter } from "react-router-dom";
 
 const mapStateToProps = ({ router, auth }) => ({
   router,
@@ -8,7 +8,9 @@ const mapStateToProps = ({ router, auth }) => ({
 });
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    Login: payload => dispatch(LoginAction(payload))
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScene);
