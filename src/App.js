@@ -143,7 +143,7 @@ export default class App extends Component {
           <Route path="/create/menu/:StoreKey" component={CreateNewmenu} />
           <Route path="/create/store/" component={CreateStore} />
           <Route path="/store" component={Store} />
-          <Route path="/" component={Login} />
+          <Route exact path="/" component={Login} />
           <Sidebar
             openSidebar={() => this.setState({ sidebar: false })}
             isOpen={this.state.sidebar}

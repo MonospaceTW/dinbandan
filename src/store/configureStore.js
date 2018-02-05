@@ -14,7 +14,7 @@ const configureStore = () => {
   return {
     ...createStore(
       rootReducer,
-      composeEnhancers(applyMiddleware(sagaMiddleware))
+      composeEnhancers(applyMiddleware(sagaMiddleware, middleware))
     ),
     runSaga: sagaMiddleware.run(rootSaga)
   };
