@@ -3,10 +3,12 @@ import Immutable from "immutable";
 const auth = Immutable.fromJS({
   isFetching: false,
   isAuth: false,
-  info: {},
+  LOGON: "NONE",
+  user: {},
   token: "",
   accountErrorText: "",
-  passwordErrorText: ""
+  passwordErrorText: "",
+  errorMessage: ""
 });
 
 export default { auth };

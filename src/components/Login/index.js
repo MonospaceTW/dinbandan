@@ -5,12 +5,18 @@ import RaisedButton from "material-ui/RaisedButton";
 import styled from "styled-components";
 import { Map } from "immutable";
 
+const Container = styled.div`
+  width: 90vw;
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const LoginForm = styled.form`
   display: flex;
-  flex: "flex-grow";
+  width: 300px;
   flex-wrapper: "wrapper";
-  flex-flow: "flex-wrap";
-  flex-grow: 1;
   justify-content: center;
   align-items: center;
 `;
@@ -19,6 +25,10 @@ const CenterRow = styled.div`
   margin: auto;
 `;
 
+const Fieldset = styled.fieldset`
+  width: 40%;
+  border-width: 0px;
+`;
 class LoginScene extends Component {
   constructor(props) {
     super(props);
@@ -34,44 +44,45 @@ class LoginScene extends Component {
   };
   render() {
     const { auth } = this.props;
-    console.log(this.props.Login);
     return (
-      <LoginForm>
-        <fieldset>
-          <legend>會員登入</legend>
-          <CenterRow>
-            <TextField
-              onChange={e => this.setState({ account: e.target.value })}
-              hintText="帳號"
-              errorText={auth.get("accountErrorText")}
-            />
-          </CenterRow>
-          <CenterRow>
-            <TextField
-              onChange={e => this.setState({ password: e.target.value })}
-              hintText="密碼"
-              errorText={auth.get("passwordErrorText")}
-            />
-          </CenterRow>
-          <CenterRow>
-            <RaisedButton
-              onClick={e => this.props.Login(this.state)}
-              style={{ width: "100%", marginTop: 10 }}
-              disabled={auth.get("isFetching")}
-              primary
-              label="登入"
-            />
-          </CenterRow>
-          <CenterRow>
-            <RaisedButton
-              style={{ width: "100%", marginTop: 10 }}
-              primary
-              disabled={auth.get("isFetching")}
-              label="註冊"
-            />
-          </CenterRow>
-        </fieldset>
-      </LoginForm>
+      <Container>
+        <LoginForm>
+          <Fieldset>
+            <CenterRow>
+              <TextField
+                onChange={e => this.setState({ account: e.target.value })}
+                hintText="帳號"
+                errorText={auth.get("accountErrorText")}
+              />
+            </CenterRow>
+            <CenterRow>
+              <TextField
+                onChange={e => this.setState({ password: e.target.value })}
+                type="password"
+                hintText="密碼"
+                errorText={auth.get("passwordErrorText")}
+              />
+            </CenterRow>
+            <CenterRow>
+              <RaisedButton
+                onClick={e => this.props.Login(this.state)}
+                style={{ width: "100%", marginTop: 10 }}
+                disabled={auth.get("isFetching")}
+                primary
+                label="登入"
+              />
+            </CenterRow>
+            <CenterRow>
+              <RaisedButton
+                style={{ width: "100%", marginTop: 10 }}
+                primary
+                disabled={auth.get("isFetching")}
+                label="註冊"
+              />
+            </CenterRow>
+          </Fieldset>
+        </LoginForm>
+      </Container>
     );
   }
 }
