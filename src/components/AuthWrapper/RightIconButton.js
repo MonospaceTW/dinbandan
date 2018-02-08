@@ -5,12 +5,14 @@ import IconMenu from "material-ui/IconMenu";
 import IconButton from "material-ui/IconButton";
 import MenuItem from "material-ui/MenuItem";
 import Divider from "material-ui/Divider";
+import { Map } from "immutable";
 
 class RightIconButton extends PureComponent {
   static propTypes = {
     LOGON: propTypes.string.isRequired,
-    user: propTypes.object.isRequired,
-    isAuth: propTypes.bool.isRequired
+    user: propTypes.instanceOf(Map).isRequired,
+    isAuth: propTypes.bool.isRequired,
+    Logout: propTypes.func.isRequired
   };
   render() {
     if (this.props.isAuth === false) {
@@ -22,11 +24,10 @@ class RightIconButton extends PureComponent {
               iconStyle={{ color: "white" }}
             />
           }
-        >
-          <MenuItem onClick={this.props.setLoginModal} primaryText="登入" />
-        </IconMenu>
+        />
       );
     } else {
+      console.log(this.props.user.toObject());
       return (
         <IconMenu
           iconButtonElement={
@@ -35,7 +36,7 @@ class RightIconButton extends PureComponent {
         >
           <MenuItem primaryText="其他選項" />
           <Divider />
-          <MenuItem onClick={this.props.logout} primaryText="登出" />
+          <MenuItem onClick={this.props.Logout} primaryText="登出" />
         </IconMenu>
       );
     }

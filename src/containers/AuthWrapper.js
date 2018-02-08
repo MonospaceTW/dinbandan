@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { LoginAction } from "../actions/auth";
+import { LoginAction, LOGOUTAction } from "../actions/auth";
 import { push } from "react-router-redux";
 import AuthWrapper from "../components/AuthWrapper";
 
@@ -11,7 +11,8 @@ const mapStateToProps = ({ router, auth }) => ({
 const mapDispatchToProps = dispatch => {
   return {
     Login: payload => dispatch(LoginAction(payload)),
-    goTo: route => dispatch(push(route))
+    goTo: route => dispatch(push(route)),
+    Logout: () => dispatch(LOGOUTAction())
   };
 };
 

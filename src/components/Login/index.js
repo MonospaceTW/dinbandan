@@ -4,6 +4,7 @@ import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import styled from "styled-components";
 import { Map } from "immutable";
+import AppBar from "material-ui/AppBar";
 
 const Container = styled.div`
   width: 90vw;
@@ -45,44 +46,47 @@ class LoginScene extends Component {
   render() {
     const { auth } = this.props;
     return (
-      <Container>
-        <LoginForm>
-          <Fieldset>
-            <CenterRow>
-              <TextField
-                onChange={e => this.setState({ account: e.target.value })}
-                hintText="帳號"
-                errorText={auth.get("accountErrorText")}
-              />
-            </CenterRow>
-            <CenterRow>
-              <TextField
-                onChange={e => this.setState({ password: e.target.value })}
-                type="password"
-                hintText="密碼"
-                errorText={auth.get("passwordErrorText")}
-              />
-            </CenterRow>
-            <CenterRow>
-              <RaisedButton
-                onClick={e => this.props.Login(this.state)}
-                style={{ width: "100%", marginTop: 10 }}
-                disabled={auth.get("isFetching")}
-                primary
-                label="登入"
-              />
-            </CenterRow>
-            <CenterRow>
-              <RaisedButton
-                style={{ width: "100%", marginTop: 10 }}
-                primary
-                disabled={auth.get("isFetching")}
-                label="註冊"
-              />
-            </CenterRow>
-          </Fieldset>
-        </LoginForm>
-      </Container>
+      <div>
+        <AppBar title="訂便當" />
+        <Container>
+          <LoginForm>
+            <Fieldset>
+              <CenterRow>
+                <TextField
+                  onChange={e => this.setState({ account: e.target.value })}
+                  hintText="帳號"
+                  errorText={auth.get("accountErrorText")}
+                />
+              </CenterRow>
+              <CenterRow>
+                <TextField
+                  onChange={e => this.setState({ password: e.target.value })}
+                  type="password"
+                  hintText="密碼"
+                  errorText={auth.get("passwordErrorText")}
+                />
+              </CenterRow>
+              <CenterRow>
+                <RaisedButton
+                  onClick={e => this.props.Login(this.state)}
+                  style={{ width: "100%", marginTop: 10 }}
+                  disabled={auth.get("isFetching")}
+                  primary
+                  label="登入"
+                />
+              </CenterRow>
+              <CenterRow>
+                <RaisedButton
+                  style={{ width: "100%", marginTop: 10 }}
+                  primary
+                  disabled={auth.get("isFetching")}
+                  label="註冊"
+                />
+              </CenterRow>
+            </Fieldset>
+          </LoginForm>
+        </Container>
+      </div>
     );
   }
 }

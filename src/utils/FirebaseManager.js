@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import _ from "lodash";
 import uuid from "uuid/v4";
-import configs from "../config";
+import { firebaseConfig } from "../configs/initialConfig";
 import { initialAdmin } from "../configs/initialConfig";
 
 class FirebaseManagerClass {
@@ -121,6 +121,6 @@ class FirebaseManagerClass {
   }
 }
 
-const FirebaseManager = new FirebaseManagerClass(configs.firebaseConfig);
+const FirebaseManager = new FirebaseManagerClass(firebaseConfig);
 
 export default FirebaseManager;

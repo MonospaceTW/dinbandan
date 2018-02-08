@@ -24,14 +24,7 @@ export default class App extends Component {
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
-        <Switch>
-          <AuthWrapper>
-            <Route path="/create/menu/:StoreKey" component={CreateNewmenu} />
-            <Route path="/create/store/" component={CreateStore} />
-            <Route path="/store" component={Store} />
-            <Route exact path="/" component={Login} />
-          </AuthWrapper>
-        </Switch>
+        <AuthWrapper />
       </MuiThemeProvider>
     );
   }
