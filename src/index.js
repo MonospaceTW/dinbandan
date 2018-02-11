@@ -2,15 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
-import configureStore from "./store/configureStore";
-import createHistory from "history/createBrowserHistory";
-import { history } from "./store/configureStore";
-import {
-  ConnectedRouter,
-  routerReducer,
-  routerMiddleware,
-  push
-} from "react-router-redux";
+import configureStore, { history } from "./store/configureStore";
+import { ConnectedRouter } from "react-router-redux";
 
 import { Provider } from "react-redux";
 

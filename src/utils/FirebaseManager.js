@@ -1,8 +1,7 @@
 import firebase from "firebase";
 import _ from "lodash";
 import uuid from "uuid/v4";
-import { firebaseConfig } from "../configs/initialConfig";
-import { initialAdmin } from "../configs/initialConfig";
+import { initialAdmin, firebaseConfig } from "../configs/initialConfig";
 
 class FirebaseManagerClass {
   constructor(options) {

@@ -1,14 +1,16 @@
 import React from "react";
 import AppBar from "material-ui/AppBar";
-import { Grid, Row } from "react-flexbox-grid";
+import { Grid } from "react-flexbox-grid";
 import RightIconButton from "./RightIconButton";
 import IconButton from "material-ui/IconButton";
 import LoginScene from "../../containers/Login";
 import Sidebar from "../utils/Sidebar";
+import Store from "../Store";
+import CreateStore from "../CreateStore";
+import { Route, Switch } from "react-router-dom";
 
 const AuthWrapper = props => {
   const { auth } = props;
-  console.log(auth.toObject());
   return !auth.get("isAuth") ? (
     <LoginScene auth={auth} />
   ) : (
@@ -30,6 +32,10 @@ const AuthWrapper = props => {
           />
         }
       />
+      <Switch>
+        <Route exact path="/" component={Store} />
+        <Route path="/create/store" component={CreateStore} />
+      </Switch>
       <Sidebar openSidebar={() => false} isOpen={false} />
     </Grid>
   );

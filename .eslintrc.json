@@ -1,0 +1,23 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "react"
+  ],
+  "parser": "babel-eslint",
+  "settings": {
+    "import/parser": "babel-eslint",
+    "import/resolve": {
+      "moduleDirectory": ["node_modules", "src"]
+    }
+  },
+  "rules": {
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "space-before-function-paren": ["error", "never"],
+    "no-trailing-spaces": [2, { "skipBlankLines": true, "ignoreComments": true }],
+    "no-unused-vars": 2,
+    "semi": [2, "always"],
+    "quotes": [2, "double"],
+    "generator-star-spacing": "off"
+  }
+}

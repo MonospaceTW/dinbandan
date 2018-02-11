@@ -27,12 +27,9 @@ class RightIconButton extends PureComponent {
         />
       );
     } else {
-      console.log(this.props.user.toObject());
       return (
         <IconMenu
-          iconButtonElement={
-            <Avatar src="https://pbs.twimg.com/media/CjEvuvBWkAI7Yia.jpg" />
-          }
+          iconButtonElement={<Avatar src={this.props.user.get("photoURL")} />}
         >
           <MenuItem primaryText="其他選項" />
           <Divider />
