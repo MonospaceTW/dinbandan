@@ -6,5 +6,8 @@ export default constants([
   "LOGIN_ERROR",
   "LOGOUT",
   "LOGOUT_SUCCESS",
-  "LOGOUT_ERROR"
+  "LOGOUT_ERROR",
+  "CREATE_STORE",
+  "CREATE_STORE_SUCCESS",
+  "CREATE_STORE_ERROR"
 ]);

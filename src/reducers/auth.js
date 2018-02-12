@@ -34,7 +34,7 @@ export default function reducer(state = initialState.auth, { type, payload }) {
     case types.LOGIN_ERROR:
       return LoginError(state, payload);
     case types.LOGOUT:
-      localStorage.removeItem(storeKeys.auth);
+      global.localStorage.removeItem(storeKeys.auth);
       return initialState.initAuth;
     default:
       return state;

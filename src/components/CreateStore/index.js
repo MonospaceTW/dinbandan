@@ -1,4 +1,5 @@
 import React from "react";
+import propTypes from "prop-types";
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import styled from "styled-components";
@@ -8,7 +9,9 @@ import TimePicker from "material-ui/TimePicker";
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 import FirebaseManager from "../../utils/FirebaseManager";
+import { Map } from "immutable";
 import { Grid, Row, Col } from "react-flexbox-grid";
+import { isEmpty } from "lodash";
 
 const ImageItem = styled(Image)`
   width: 100%;
@@ -19,29 +22,45 @@ const TelBlockContainer = styled.span`
   width: 80px;
   margin-right: 20px;
 `;
-const OrderInCountTextField = styled(TextField)`
-  width: 80px;
+const OrderInCountTextField = styled(TextField)``;
+
+const OrderInSelectField = styled(SelectField)`
+  width: 50px;
 `;
 
 class CreateStore extends React.PureComponent {
+  static propTypes = {
+    store: propTypes.instanceOf(Map).isRequired,
+    handleCreateStore: propTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      errors: {},
-      data: {
-        logo: {
-          url: "https://ostarmotorsports.com/images/Unavailable/256px-No_image_available.svg.png",
-          route: ""
-        },
+      errors: {
+        logo: "",
         name: "",
         address: "",
+        telBlock: "",
+        telNum: "",
+        timeStart: "",
+        timeEnd: ""
+      },
+      data: {
+        logo: {
+          url:
+            "https://ostarmotorsports.com/images/Unavailable/256px-No_image_available.svg.png",
+          route: ""
+        },
+        name: "阿三的店",
+        address: "台中市台灣大道二段二號十六樓",
         orderIn: {
           unit: "元",
-          count: 1
+          count: 300
         },
         tel: {
-          block: "",
-          num: ""
+          block: "02",
+          num: "2233222"
         },
         time: {
           start: "",
@@ -55,30 +74,68 @@ class CreateStore extends React.PureComponent {
   }
 
   uploadImage = async file => {
-    const {data} = this.state;
+    const { data } = this.state;
     const response = await FirebaseManager.uploadFile(file);
     data.logo.url = response.url;
     data.logo.route = response.route;
-    this.setState({data: {...data}});
+    this.setState({ data: { ...data } });
+  };
+
+  submit = (data) => {
+    let error = false;
+    const errors = {
+      logo: "",
+      name: "",
+      address: "",
+      telBlock: "",
+      telNum: "",
+      timeStart: "",
+      timeEnd: ""
+    };
+    if (isEmpty(data.name)) {
+      error = true;
+      errors.name = "店名不可為空";
+    }
+    if (isEmpty(data.address)) {
+      error = true;
+      errors.address = "密碼不可為空";
+    }
+    if (isEmpty(data.logo.route)) {
+      errors.logo = "商店圖片不可為空";
+      error = true;
+    }
+    if (isEmpty(data.tel.num)) {
+      error = true;
+      errors.telNum = "商店電話不可為空";
+    }
+    this.props.handleCreateStore({
+      data
+    });
+    if (error === true) {
+      return this.setState({ errors });
+    } else {
+      // this.props.handleCreateStore({
+      //   data
+      // });
+    }
   }
 
   render() {
-    const { data } = this.state;
-    console.log(data);
+    const { data, errors } = this.state;
+    console.log(data.time.end);
     return (
-      <Grid style={{ width: "80%", marginTop: 20 }}>
+      <Grid style={{ width: "60%", marginTop: 20 }}>
         <div>
           <div>
             <Dropzone onDrop={files => this.uploadImage(files[0])}>
-              <ImageItem
-                onLoad={() => console.log("load")}
-                src={data.logo.url}
-              />
+              <ImageItem src={data.logo.url} />
             </Dropzone>
           </div>
           <div>
             <TextField
+              name="name"
               hintText="請輸入店名"
+              errorText={errors.account}
               value={data.name}
               onChange={e => {
                 const newData = {
@@ -91,7 +148,9 @@ class CreateStore extends React.PureComponent {
           </div>
           <div>
             <TextField
+              name="address"
               hintText="請輸入地址"
+              errorText={errors.password}
               value={data.address}
               onChange={e => {
                 const newData = {
@@ -105,13 +164,31 @@ class CreateStore extends React.PureComponent {
           <div>
             <TelBlockContainer>
               <TextField
+                name="telblock"
                 hintText="請輸入區碼"
                 style={{ width: 80 }}
                 value={data.tel.block}
               />
             </TelBlockContainer>
             <span>
-              <TextField hintText="請輸入號碼或手機" value={data.tel.num} />
+              <TextField
+                name="telnum"
+                value={data.tel.num}
+                onChange={e => {
+                  const { data } = this.state;
+                  const newData = {
+                    ...data,
+                    tel: {
+                      ...data.tel,
+                      num: e.target.value
+                    }
+                  };
+                  this.setState({ data: newData });
+                }}
+                errorText={errors.telNum}
+                hintText="請輸入號碼或手機"
+                value={data.tel.num}
+              />
             </span>
           </div>
           <Row>
@@ -119,23 +196,51 @@ class CreateStore extends React.PureComponent {
               <TimePicker
                 format="24hr"
                 hintText="開始營業時間"
-                value={data.time.start}
-                onChange={console.log}
+                onChange={(err, date) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  const { data } = this.state;
+                  const newData = {
+                    ...data,
+                    time: {
+                      ...data.time,
+                      start: date
+                    }
+                  };
+                  this.setState({ data: newData });
+                }}
               />
             </Col>
             <Col xs={5} md={3}>
               <TimePicker
                 format="24hr"
                 hintText="結束營業時間"
-                value={data.time.end}
-                onChange={console.log}
+                onChange={(err, date) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  const { data } = this.state;
+                  const newData = {
+                    ...data,
+                    time: {
+                      ...data.time,
+                      end: date
+                    }
+                  };
+                  this.setState({ data: newData });
+                }}
               />
             </Col>
           </Row>
-          <div>
-            <div>
+          <Row>
+            <Col style={{ textAlign: "center", marginTop: 10 }} xs={1} md={1}>
+              外送條件:
+            </Col>
+            <Col xs={3} md={3}>
               <OrderInCountTextField
-                style={{ width: 50 }}
+                name="orderincount"
+                style={{ width: 80 }}
                 type="number"
                 value={data.orderIn.count}
                 onChange={e => {
@@ -149,9 +254,10 @@ class CreateStore extends React.PureComponent {
                   this.setState({ data: newData });
                 }}
               />
-            </div>
-            <div>
-              <SelectField
+            </Col>
+            <Col xs={1} md={1}>
+              <OrderInSelectField
+                name="orderunit"
                 value={data.orderIn.unit}
                 onChange={(event, index, value) => {
                   const newData = {
@@ -167,11 +273,16 @@ class CreateStore extends React.PureComponent {
               >
                 <MenuItem value="份" primaryText="份" />
                 <MenuItem value="元" primaryText="元" />
-              </SelectField>
-            </div>
-          </div>
+              </OrderInSelectField>
+            </Col>
+          </Row>
           <div>
-            <RaisedButton label="新增" primary={true} style={{ margin: 12 }} />
+            <RaisedButton
+              label="新增"
+              primary={true}
+              style={{ margin: 12 }}
+              onClick={() => this.submit(data)}
+            />
           </div>
         </div>
       </Grid>

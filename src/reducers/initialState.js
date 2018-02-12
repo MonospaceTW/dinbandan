@@ -14,7 +14,7 @@ const initAuth = {
 };
 
 function initialAuth() {
-  const userCache = localStorage.getItem(storeKeys.auth);
+  const userCache = global.localStorage.getItem(storeKeys.auth);
   if (_.isNull(userCache)) {
     return Immutable.fromJS(initAuth);
   } else {
@@ -33,5 +33,9 @@ function initialAuth() {
 }
 
 const auth = initialAuth();
+const store = Immutable.fromJS({
+  isFetching: false,
+  stores: []
+});
 
-export default { auth, initAuth: Immutable.fromJS(initAuth) };
+export default { store, auth, initAuth: Immutable.fromJS(initAuth) };

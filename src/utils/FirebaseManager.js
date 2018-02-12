@@ -105,6 +105,7 @@ class FirebaseManagerClass {
     };
     return this.database.ref().update(updates);
   }
+
   bindAsyncFunc(route, callback) {
     return this.database.ref(route).on("value", callback);
   }

@@ -24,7 +24,7 @@ export function* LoginSaga({ payload }) {
     user.photoURL =
       userData.photoURL ||
       "http://nwesports.org/wp-content/uploads/2017/07/default_user.png";
-    localStorage.setItem(storeKeys.auth, JSON.stringify(user));
+    global.localStorage.setItem(storeKeys.auth, JSON.stringify(user));
     yield put(push("/store"));
     yield put({
       type: types.LOGIN_SUCCESS,

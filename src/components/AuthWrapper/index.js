@@ -6,7 +6,7 @@ import IconButton from "material-ui/IconButton";
 import LoginScene from "../../containers/Login";
 import Sidebar from "../utils/Sidebar";
 import Store from "../Store";
-import CreateStore from "../CreateStore";
+import CreateStore from "../../containers/CreateStore";
 import { Route, Switch } from "react-router-dom";
 
 const AuthWrapper = props => {
