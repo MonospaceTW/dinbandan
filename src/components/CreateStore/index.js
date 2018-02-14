@@ -3,20 +3,14 @@ import propTypes from "prop-types";
 import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import styled from "styled-components";
-import Dropzone from "react-dropzone";
-import Image from "react-image";
 import TimePicker from "material-ui/TimePicker";
 import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 import FirebaseManager from "../../utils/FirebaseManager";
+import ImageHandler from "./ImageHandler";
 import { Map } from "immutable";
 import { Grid, Row, Col } from "react-flexbox-grid";
 import { isEmpty } from "lodash";
-
-const ImageItem = styled(Image)`
-  width: 100%;
-  height: 100%;
-`;
 
 const TelBlockContainer = styled.span`
   width: 80px;
@@ -28,7 +22,7 @@ const OrderInSelectField = styled(SelectField)`
   width: 50px;
 `;
 
-class CreateStore extends React.PureComponent {
+class CreateStore extends React.Component {
   static propTypes = {
     store: propTypes.instanceOf(Map).isRequired,
     handleCreateStore: propTypes.func.isRequired
@@ -37,6 +31,7 @@ class CreateStore extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      imageLoading: false,
       errors: {
         logo: "",
         name: "",
@@ -48,8 +43,7 @@ class CreateStore extends React.PureComponent {
       },
       data: {
         logo: {
-          url:
-            "https://ostarmotorsports.com/images/Unavailable/256px-No_image_available.svg.png",
+          url: undefined,
           route: ""
         },
         name: "阿三的店",
@@ -74,14 +68,15 @@ class CreateStore extends React.PureComponent {
   }
 
   uploadImage = async file => {
+    this.setState({ imageLoading: true });
     const { data } = this.state;
     const response = await FirebaseManager.uploadFile(file);
     data.logo.url = response.url;
     data.logo.route = response.route;
-    this.setState({ data: { ...data } });
+    this.setState({ data: { ...data }, imageLoading: false });
   };
 
-  submit = (data) => {
+  submit = data => {
     let error = false;
     const errors = {
       logo: "",
@@ -108,28 +103,29 @@ class CreateStore extends React.PureComponent {
       error = true;
       errors.telNum = "商店電話不可為空";
     }
-    this.props.handleCreateStore({
-      data
-    });
     if (error === true) {
       return this.setState({ errors });
     } else {
-      // this.props.handleCreateStore({
-      //   data
-      // });
+      this.props.handleCreateStore({
+        data
+      });
     }
-  }
+  };
 
   render() {
-    const { data, errors } = this.state;
-    console.log(data.time.end);
+    const { data, errors, imageLoading } = this.state;
+    const { store } = this.props;
+
     return (
       <Grid style={{ width: "60%", marginTop: 20 }}>
         <div>
           <div>
-            <Dropzone onDrop={files => this.uploadImage(files[0])}>
-              <ImageItem src={data.logo.url} />
-            </Dropzone>
+            <ImageHandler
+              uploadImage={this.uploadImage}
+              isFetching={store.get("isFetching")}
+              isLoading={imageLoading}
+              image={data.logo.url}
+            />
           </div>
           <div>
             <TextField

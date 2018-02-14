@@ -4,7 +4,7 @@ import { storeKeys } from "../configs/initialConfig";
 import _ from "lodash";
 import types from "../constants/actionTypes";
 import FirebaseManager from "../utils/FirebaseManager";
-console.log(storeKeys);
+
 export function* LoginSaga({ payload }) {
   const { account, password } = payload;
   try {

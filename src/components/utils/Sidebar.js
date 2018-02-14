@@ -8,7 +8,7 @@ import FontIcon from "material-ui/FontIcon";
 import AppBar from "material-ui/AppBar";
 import { Link } from "react-router-dom";
 
-class Sidebar extends React.PureComponent {
+class Sidebar extends React.Component {
   static propTypes = {
     isOpen: propTypes.bool.isRequired,
     openSidebar: propTypes.func.isRequired

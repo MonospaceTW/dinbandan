@@ -1,20 +1,16 @@
 import { Grid, Row } from "react-flexbox-grid";
 import React from "react";
 import propTypes from "prop-types";
-import Dialog from "material-ui/Dialog";
 import FontIcon from "material-ui/FontIcon";
 import FlatButton from "material-ui/FlatButton";
-import Avatar from "material-ui/Avatar";
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import TextField from "material-ui/TextField";
 import FirebaseManager from "../../utils/FirebaseManager";
 import ListTable from "./ListTable";
 import _ from "lodash";
 
-
 class StoreList extends React.Component {
-  static propTypes = {};
+  static propTypes = {
+    router: propTypes.object.isRequired
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -49,7 +45,7 @@ class StoreList extends React.Component {
     this.setState({ storeData: data });
   };
 
-  saveStore = async () => {
+  saveStore = async() => {
     const { storeData } = this.state;
     await FirebaseManager.addNewData("/stores", storeData);
   };

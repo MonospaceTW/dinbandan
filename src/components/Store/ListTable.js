@@ -9,7 +9,7 @@ import { red900 } from "material-ui/styles/colors";
 import { List } from "material-ui/List";
 import { Col } from "react-flexbox-grid";
 
-class ListTable extends React.PureComponent {
+class ListTable extends React.Component {
   static propTypes = {
     deleteStore: propTypes.func.isRequired,
     history: propTypes.object.isRequired

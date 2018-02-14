@@ -1,9 +1,11 @@
 import { connect } from "react-redux";
 import {handleCreateStore} from "../actions/store";
+import { withRouter } from "react-router";
 import CreateStore from "../components/CreateStore";
 
-const mapStateToProps = ({store}) => ({
-  store
+const mapStateToProps = ({store, router}) => ({
+  store,
+  router
 });
 
 const mapDispatchToProps = dispatch => {
@@ -12,4 +14,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateStore);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateStore));

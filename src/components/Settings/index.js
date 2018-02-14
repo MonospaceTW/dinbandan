@@ -1,9 +1,9 @@
-import React, {PureComponent} from "react";
+import React, {Component} from "react";
 import propTypes from "prop-types";
 
-class Settings extends PureComponent{
-  render(){
-    return(
+class Settings extends Component {
+  render() {
+    return (
       <div>settings</div>
     );
   }

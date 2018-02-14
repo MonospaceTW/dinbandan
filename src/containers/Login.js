@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import { LoginAction } from "../actions/auth";
 import LoginScene from "../components/Login";
+import { withRouter } from "react-router";
 
 const mapStateToProps = ({ router, auth }) => ({
   router,
@@ -13,4 +14,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScene);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginScene));

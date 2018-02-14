@@ -1,5 +1,6 @@
 import { connect } from "react-redux";
 import CreateNewmenu from "../components/CreateNewmenu";
+import { withRouter } from "react-router";
 
 const mapStateToProps = state => ({});
 
@@ -7,4 +8,4 @@ const mapDispatchToProps = dispatch => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateNewmenu);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateNewmenu));

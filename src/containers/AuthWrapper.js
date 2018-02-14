@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { LoginAction, LOGOUTAction } from "../actions/auth";
 import { push } from "react-router-redux";
 import AuthWrapper from "../components/AuthWrapper";
+import { withRouter } from "react-router";
 
 const mapStateToProps = ({ router, auth }) => ({
   router,
@@ -16,4 +17,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthWrapper);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthWrapper));
