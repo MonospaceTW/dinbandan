@@ -1,0 +1,9 @@
+{
+  "user": {
+    "displayName": "testuser",
+    "email": "test@gmail.com",
+    "phoneNumber": "0987654321",
+    "photoURL":
+      "http://nwesports.org/wp-content/uploads/2017/07/default_user.png"
+  }
+}

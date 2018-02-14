@@ -9,9 +9,10 @@ class FirebaseManagerClass {
     firebase.initializeApp(options);
     this.provider = new firebase.auth.FacebookAuthProvider();
     this.database = firebase.database();
-    this.storage = firebase.storage();
+    if (firebase.storage) {
+      this.storage = firebase.storage();
+    }
     this.auth = firebase.auth();
-    this.initialAdmin();
   }
 
   get user() {
@@ -41,7 +42,7 @@ class FirebaseManagerClass {
     return this.auth.getRedirectResult();
   }
 
-  uploadFile(file) {
+  uploadFile = (file) => {
     const route = `/${file.name}`;
     return this.storage
       .ref(route)
@@ -60,7 +61,7 @@ class FirebaseManagerClass {
     return this.auth.signInWithPopup(this.provider);
   };
 
-  signInWithEmailAndPassword(account, password) {
+  signInWithEmailAndPassword = (account, password) => {
     return this.auth.signInWithEmailAndPassword(account, password);
   }
 
@@ -72,7 +73,8 @@ class FirebaseManagerClass {
     return this.auth.signOut();
   };
 
-  getValue(route) {
+  getValue = (route) => {
+    console.log(this.database);
     return this.database
       .ref(route)
       .once("value")

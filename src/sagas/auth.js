@@ -1,4 +1,4 @@
-import { put } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { storeKeys } from "../configs/initialConfig";
 import _ from "lodash";
@@ -8,11 +8,11 @@ import FirebaseManager from "../utils/FirebaseManager";
 export function* LoginSaga({ payload }) {
   const { account, password } = payload;
   try {
-    let userData = yield FirebaseManager.signInWithEmailAndPassword(
+    let userData = yield call(
+      FirebaseManager.signInWithEmailAndPassword,
       account,
       password
     );
-
     const user = _.pick(
       userData,
       "email",
@@ -20,7 +20,6 @@ export function* LoginSaga({ payload }) {
       "phoneNumber",
       "photoURL"
     );
-
     user.photoURL =
       userData.photoURL ||
       "http://nwesports.org/wp-content/uploads/2017/07/default_user.png";
