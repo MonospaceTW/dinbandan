@@ -5,6 +5,6 @@ export const LoginAction = payload => ({
   payload
 });
 
-export const LOGOUTAction = () => ({
+export const LogoutAction = () => ({
   type: types.LOGOUT
 });
