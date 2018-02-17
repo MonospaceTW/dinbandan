@@ -46,15 +46,15 @@ class CreateStore extends React.Component {
           url: undefined,
           route: ""
         },
-        name: "阿三的店",
-        address: "台中市台灣大道二段二號十六樓",
+        name: "",
+        address: "",
         orderIn: {
           unit: "元",
-          count: 300
+          count: 0
         },
         tel: {
-          block: "02",
-          num: "2233222"
+          block: "",
+          num: ""
         },
         time: {
           start: "",
@@ -161,6 +161,17 @@ class CreateStore extends React.Component {
             <TelBlockContainer>
               <TextField
                 name="telblock"
+                onChange={e => {
+                  const { data } = this.state;
+                  const newData = {
+                    ...data,
+                    tel: {
+                      ...data.tel,
+                      block: e.target.value
+                    }
+                  };
+                  this.setState({ data: newData });
+                }}
                 hintText="請輸入區碼"
                 style={{ width: 80 }}
                 value={data.tel.block}
@@ -275,6 +286,7 @@ class CreateStore extends React.Component {
           <div>
             <RaisedButton
               label="新增"
+              className="formSubmit"
               primary={true}
               style={{ margin: 12 }}
               onClick={() => this.submit(data)}

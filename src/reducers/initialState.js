@@ -15,7 +15,8 @@ const initAuth = {
 
 function initialAuth() {
   const userCache = global.localStorage.getItem(storeKeys.auth);
-  if (_.isNull(userCache)) {
+
+  if (_.isNull(userCache) || _.isUndefined(userCache)) {
     return Immutable.fromJS(initAuth);
   } else {
     const user = JSON.parse(userCache);

@@ -74,7 +74,6 @@ class FirebaseManagerClass {
   };
 
   getValue = (route) => {
-    console.log(this.database);
     return this.database
       .ref(route)
       .once("value")
