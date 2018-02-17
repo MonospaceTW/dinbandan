@@ -1,4 +1,5 @@
 import { Grid, Row } from "react-flexbox-grid";
+import {Map} from "immutable";
 import React from "react";
 import propTypes from "prop-types";
 import FontIcon from "material-ui/FontIcon";
@@ -9,7 +10,7 @@ import _ from "lodash";
 
 class StoreList extends React.Component {
   static propTypes = {
-    router: propTypes.object.isRequired
+    store: propTypes.instanceOf(Map).isRequired
   };
   constructor(props) {
     super(props);

@@ -4,7 +4,7 @@ import CreateStore from "../CreateStore";
 import initialState from "../../reducers/initialState";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import { spy } from "sinon";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import { cyan500 } from "material-ui/styles/colors";
 
 const { describe, it, expect } = global;

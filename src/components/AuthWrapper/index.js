@@ -38,7 +38,7 @@ const AuthWrapper = props => {
         }
       />
       <Switch>
-        <Route exact path="/" component={Store} />
+        <Route exact path="/store" component={Store} />
         <Route path="/create/store" component={CreateStore} />
       </Switch>
       <Sidebar openSidebar={() => false} isOpen={false} />

@@ -6,7 +6,7 @@ import Avatar from "material-ui/Avatar";
 import Paper from "material-ui/Paper";
 import Divider from "material-ui/Divider";
 import { red900 } from "material-ui/styles/colors";
-import { List } from "material-ui/List";
+import { List, ListItem } from "material-ui/List";
 import { Col } from "react-flexbox-grid";
 
 class ListTable extends React.Component {
@@ -17,6 +17,7 @@ class ListTable extends React.Component {
 
   render() {
     return this.props.storeList.map((store, index) => {
+      console.log(store);
       return (
         <Col key={store.StoreKey} xs={12} md={3}>
           <Paper
@@ -29,6 +30,9 @@ class ListTable extends React.Component {
             <List>
               <Avatar src={store.logo.url} size={120} style={{ margin: 10 }} />
               <Divider />
+              <ListItem style={{margin: 0}} primaryText="營業時間" secondaryText={`${store.time.start} ~ ${store.time.end}`}/>
+              <ListItem primaryText="電話" secondaryText={`${store.tel.block} -${store.tel.num}`}/>
+              <Divider />
               <RaisedButton
                 label="編輯菜單"
                 onClick={() =>
@@ -37,6 +41,7 @@ class ListTable extends React.Component {
                 style={{ margin: 5 }}
                 icon={<FontIcon className="fa fa-gear" />}
               />
+              
               <RaisedButton
                 style={{ margin: 5 }}
                 label="刪除"

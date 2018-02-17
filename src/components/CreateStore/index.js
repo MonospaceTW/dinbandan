@@ -1,6 +1,6 @@
 import React from "react";
+import moment from "moment";
 import propTypes from "prop-types";
-import TextField from "material-ui/TextField";
 import RaisedButton from "material-ui/RaisedButton";
 import styled from "styled-components";
 import TimePicker from "material-ui/TimePicker";
@@ -11,12 +11,29 @@ import ImageHandler from "./ImageHandler";
 import { Map } from "immutable";
 import { Grid, Row, Col } from "react-flexbox-grid";
 import { isEmpty } from "lodash";
+import { grey500, red500 } from "material-ui/styles/colors";
 
 const TelBlockContainer = styled.span`
   width: 80px;
   margin-right: 20px;
 `;
-const OrderInCountTextField = styled(TextField)``;
+
+const Input = styled.input`
+  width: ${props => props.width || "200px"};
+  height: 22px;
+  font-size: 0.9em;
+  line-height: 1.2em;
+  border: 0px solid white;
+  border-bottom: 1px solid ${grey500};
+  &::placeholder {
+    color: ${props => props.error ? red500 : grey500};
+  }
+  &:focus{
+    &::placeholder {
+      color: ${grey500}
+    }
+  }
+`;
 
 const OrderInSelectField = styled(SelectField)`
   width: 50px;
@@ -106,15 +123,18 @@ class CreateStore extends React.Component {
     if (error === true) {
       return this.setState({ errors });
     } else {
-      this.props.handleCreateStore({
-        data
-      });
+      data.time.start = moment(data.time.start).format("hh:ss");
+      data.time.end = moment(data.time.end).format("hh:ss");
+      console.log(data.time);
+      // this.props.handleCreateStore({
+      //   data
+      // });
     }
   };
 
   render() {
-    const { data, errors, imageLoading } = this.state;
-    const { store } = this.props;
+    const { data, imageLoading } = this.state;
+    const { store, history } = this.props;
 
     return (
       <Grid style={{ width: "60%", marginTop: 20 }}>
@@ -128,10 +148,9 @@ class CreateStore extends React.Component {
             />
           </div>
           <div>
-            <TextField
+            <Input
               name="name"
-              hintText="請輸入店名"
-              errorText={errors.account}
+              placeholder="請輸入店名"
               value={data.name}
               onChange={e => {
                 const newData = {
@@ -143,10 +162,9 @@ class CreateStore extends React.Component {
             />
           </div>
           <div>
-            <TextField
+            <Input
               name="address"
-              hintText="請輸入地址"
-              errorText={errors.password}
+              placeholder="請輸入地址"
               value={data.address}
               onChange={e => {
                 const newData = {
@@ -159,7 +177,7 @@ class CreateStore extends React.Component {
           </div>
           <div>
             <TelBlockContainer>
-              <TextField
+              <Input
                 name="telblock"
                 onChange={e => {
                   const { data } = this.state;
@@ -172,13 +190,13 @@ class CreateStore extends React.Component {
                   };
                   this.setState({ data: newData });
                 }}
-                hintText="請輸入區碼"
-                style={{ width: 80 }}
+                placeholder="請輸入區碼"
+                width="80px"
                 value={data.tel.block}
               />
             </TelBlockContainer>
             <span>
-              <TextField
+              <Input
                 name="telnum"
                 value={data.tel.num}
                 onChange={e => {
@@ -192,8 +210,7 @@ class CreateStore extends React.Component {
                   };
                   this.setState({ data: newData });
                 }}
-                errorText={errors.telNum}
-                hintText="請輸入號碼或手機"
+                placeholder="請輸入電話"
                 value={data.tel.num}
               />
             </span>
@@ -245,9 +262,9 @@ class CreateStore extends React.Component {
               外送條件:
             </Col>
             <Col xs={3} md={3}>
-              <OrderInCountTextField
+              <Input
                 name="orderincount"
-                style={{ width: 80 }}
+                width="80px"
                 type="number"
                 value={data.orderIn.count}
                 onChange={e => {
@@ -290,6 +307,12 @@ class CreateStore extends React.Component {
               primary={true}
               style={{ margin: 12 }}
               onClick={() => this.submit(data)}
+            />
+            <RaisedButton
+              label="取消"
+              primary={true}
+              style={{ margin: 12 }}
+              onClick={() => history.push("/store")}
             />
           </div>
         </div>

@@ -2,7 +2,9 @@ import {connect} from "react-redux";
 import Store from "../components/Store";
 import { withRouter } from "react-router-dom";
 
-const mapStateToProps = state => ({});
+const mapStateToProps = ({store}) => ({
+  store
+});
 
 const mapDispatchToProps = dispatch => {
   return {};
