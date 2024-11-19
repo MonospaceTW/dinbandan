@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "firebase": "^4.9.1",
+    "firebase": "^10.9.0",
     "firebase-admin": "^5.8.2",
     "flux-constants": "^0.2.2",
     "history": "^4.7.2",
